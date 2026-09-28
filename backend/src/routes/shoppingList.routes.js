@@ -45,16 +45,33 @@ router.post('/generate', async (req, res) => {
     const config = await shoppingListConfigService.getConfig();
     const items = await buildShoppingListItems(diet, config);
 
+    // Una sola lista por semana: una semana que cruza de mes esta en dos MonthPlan, pero es la misma compra.
     const shoppingList = await ShoppingList.findOneAndUpdate(
-      { monthPlanId, fechaInicioSemana: semana.fechaInicioSemana },
+      { fechaInicioSemana: semana.fechaInicioSemana },
       { monthPlanId, fechaInicioSemana: semana.fechaInicioSemana, dietId: diet._id, items },
-      { new: true, upsert: true }
+      { new: true, upsert: true, sort: { updatedAt: -1 } }
     );
 
     res.json(shoppingList);
   } catch (err) {
     res.status(500).json({ error: `No se pudo generar la lista de la compra: ${err.message}` });
   }
+});
+
+/**
+ * @openapi
+ * /api/shopping-list/week/{fechaInicioSemana}:
+ *   get:
+ *     summary: Obtiene la lista de la compra guardada de una semana (null si aun no se ha generado)
+ *     tags: [ShoppingList]
+ */
+router.get('/week/:fechaInicioSemana', async (req, res) => {
+  const fecha = new Date(req.params.fechaInicioSemana);
+  if (Number.isNaN(fecha.getTime())) {
+    return res.status(400).json({ error: 'fechaInicioSemana invalida' });
+  }
+  const list = await ShoppingList.findOne({ fechaInicioSemana: fecha }).sort({ updatedAt: -1 });
+  res.json(list);
 });
 
 /**
