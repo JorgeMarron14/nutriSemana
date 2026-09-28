@@ -1,0 +1,265 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
+      <span class="ns-brand">
+        <img src="icon.svg" alt="" />
+        <span class="ns-wordmark">nutri<span>SEMANA</span></span>
+      </span>
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding" #contenido>
+  <div class="ns-container">
+    <!-- Mes y progreso -->
+    <section class="month">
+      <div class="month-nav">
+        <button type="button" class="round-btn" aria-label="Mes anterior" (click)="mesAnterior()">
+          <ion-icon name="chevron-back-outline"></ion-icon>
+        </button>
+        <div class="month-title">
+          <h1>{{ nombreMes() }}</h1>
+          @if (!esMesActual()) {
+            <button type="button" class="today-link" (click)="irAHoy()">
+              <ion-icon name="today-outline"></ion-icon> Volver a hoy
+            </button>
+          }
+        </div>
+        <button type="button" class="round-btn" aria-label="Mes siguiente" (click)="mesSiguiente()">
+          <ion-icon name="chevron-forward-outline"></ion-icon>
+        </button>
+      </div>
+
+      @if (semanas().length > 0) {
+        <div class="progress">
+          <div class="progress-bar">
+            <span [style.width.%]="(semanasPlanificadas() / semanas().length) * 100"></span>
+          </div>
+          <span class="progress-text">
+            <strong>{{ semanasPlanificadas() }}</strong> de {{ semanas().length }} semanas con dieta
+          </span>
+        </div>
+      }
+    </section>
+
+    <!-- Menu del dia (navegable) -->
+    @if (menuDia(); as menu) {
+      <section class="today ns-card" [class.today--empty]="!menu.dieta" [style.--accent]="colorDieta(menu.dieta?._id)">
+        <div class="today-head">
+          <button type="button" class="today-nav" aria-label="Día anterior" [disabled]="!puedeRetroceder()" (click)="moverDia(-1)">
+            <ion-icon name="chevron-back-outline"></ion-icon>
+          </button>
+          <div class="today-title">
+            <span class="today-label">
+              @if (etiquetaRelativa(); as rel) { {{ rel }} · }{{ menu.fecha | date: 'EEEE d MMMM' }}
+            </span>
+            @if (menu.dieta) {
+              <span class="today-diet">{{ menu.dieta.nombre }}</span>
+            }
+          </div>
+          <button type="button" class="today-nav" aria-label="Día siguiente" [disabled]="!puedeAvanzar()" (click)="moverDia(1)">
+            <ion-icon name="chevron-forward-outline"></ion-icon>
+          </button>
+        </div>
+
+        <div class="today-strip" role="tablist" aria-label="Días de la semana">
+          @for (dia of menu.vista.dias; track $index) {
+            <button
+              type="button"
+              role="tab"
+              class="today-day"
+              [class.today-day--selected]="$index === menu.indice"
+              [class.today-day--now]="dia.esHoy"
+              [attr.aria-selected]="$index === menu.indice"
+              (click)="seleccionarDia(dia.fecha)"
+            >
+              <span>{{ dia.inicial }}</span>
+              <strong>{{ dia.numero }}</strong>
+            </button>
+          }
+        </div>
+
+        @if (!menu.dieta) {
+          <div class="today-none">
+            <p>Esta semana no tiene dieta asignada.</p>
+            <button type="button" class="today-assign" (click)="abrirSelector(menu.vista)">
+              <ion-icon name="add-outline"></ion-icon> Asignar dieta
+            </button>
+          </div>
+        } @else {
+        <div class="today-meals">
+          <div class="today-meal">
+            <ion-icon name="sunny-outline"></ion-icon>
+            <div>
+              <span class="meal-label">Comida</span>
+              <p>{{ textoPlatos(menu.comida) }}</p>
+            </div>
+          </div>
+          <div class="today-meal">
+            <ion-icon name="moon-outline"></ion-icon>
+            <div>
+              <span class="meal-label">Cena</span>
+              <p>{{ textoPlatos(menu.cena) }}</p>
+            </div>
+          </div>
+        </div>
+        }
+
+        @if (!menu.esHoy) {
+          <button type="button" class="today-back" (click)="volverAHoy()">
+            <ion-icon name="today-outline"></ion-icon> Volver a hoy
+          </button>
+        }
+      </section>
+    }
+
+    <!-- Semanas -->
+    @if (!monthPlan()) {
+      <div class="loading"><ion-spinner name="crescent"></ion-spinner></div>
+    } @else {
+      <div class="weeks">
+        @for (vista of semanasVisibles(); track vista.semana.fechaInicioSemana) {
+          <ng-container *ngTemplateOutlet="tarjetaSemana; context: { $implicit: vista, pasada: false }"></ng-container>
+        }
+      </div>
+
+      @if (semanasPasadas().length) {
+        <button
+          type="button"
+          class="past-toggle"
+          [class.past-toggle--open]="mostrarPasadas()"
+          [attr.aria-expanded]="mostrarPasadas()"
+          (click)="mostrarPasadas.set(!mostrarPasadas())"
+        >
+          <span>
+            {{ mostrarPasadas() ? 'Ocultar' : 'Ver' }} semanas pasadas
+            <span class="past-count">{{ semanasPasadas().length }}</span>
+          </span>
+          <ion-icon name="chevron-down-outline"></ion-icon>
+        </button>
+
+        @if (mostrarPasadas()) {
+          <div class="weeks weeks--past">
+            @for (vista of semanasPasadas(); track vista.semana.fechaInicioSemana) {
+              <ng-container *ngTemplateOutlet="tarjetaSemana; context: { $implicit: vista, pasada: true }"></ng-container>
+            }
+          </div>
+        }
+      }
+    }
+
+    <ng-template #tarjetaSemana let-vista let-pasada="pasada">
+        <article
+          class="week ns-card"
+          [class.week--past]="pasada"
+          [class.week--current]="vista.esActual"
+          [class.week--empty]="!vista.dieta"
+          [style.--accent]="colorDieta(vista.dieta?._id)"
+        >
+          <header class="week-head">
+            <div>
+              <span class="week-num">Semana {{ vista.numero }}</span>
+              <span class="week-range">{{ vista.inicio | date: 'd MMM' }} – {{ vista.fin | date: 'd MMM' }}</span>
+            </div>
+            @if (vista.esActual) {
+              <span class="badge-now">Esta semana</span>
+            }
+          </header>
+
+          <div class="day-strip">
+            @for (dia of vista.dias; track $index) {
+              <button
+                type="button"
+                class="day"
+                [class.day--out]="dia.fueraDeMes"
+                [class.day--today]="dia.esHoy"
+                [class.day--selected]="esDiaSeleccionado(dia.fecha)"
+                [attr.aria-label]="'Ver el menú del ' + (dia.fecha | date: 'EEEE d')"
+                (click)="seleccionarDia(dia.fecha); contenido.scrollToTop(300)"
+              >
+                <span class="day-letter">{{ dia.inicial }}</span>
+                <span class="day-num">{{ dia.numero }}</span>
+              </button>
+            }
+          </div>
+
+          @if (vista.dieta; as dieta) {
+            <button type="button" class="assigned" (click)="abrirSelector(vista)">
+              <span class="assigned-dot"></span>
+              <span class="assigned-info">
+                <strong>{{ dieta.nombre }}</strong>
+                @if (comidasLibres(dieta) > 0) {
+                  <small>{{ comidasLibres(dieta) }} {{ comidasLibres(dieta) === 1 ? 'comida libre' : 'comidas libres' }}</small>
+                }
+              </span>
+              <span class="assigned-change"><ion-icon name="swap-horizontal-outline"></ion-icon> Cambiar</span>
+            </button>
+          } @else {
+            <button type="button" class="assign" (click)="abrirSelector(vista)">
+              <ion-icon name="add-outline"></ion-icon>
+              Asignar dieta
+            </button>
+          }
+        </article>
+    </ng-template>
+  </div>
+
+  <!-- Selector de dieta -->
+  <ion-modal
+    [isOpen]="!!semanaEditando()"
+    [initialBreakpoint]="0.65"
+    [breakpoints]="[0, 0.65, 1]"
+    handleBehavior="cycle"
+    (didDismiss)="cerrarSelector()"
+  >
+    <ng-template>
+      <ion-content class="ion-padding">
+        @if (semanaEditando(); as vista) {
+          <div class="picker">
+            <h2>Elige la dieta</h2>
+            <p class="ns-muted picker-sub">
+              Semana del {{ vista.inicio | date: 'd MMM' }} al {{ vista.fin | date: 'd MMM' }}
+            </p>
+
+            <div class="picker-list">
+              @for (dieta of dietas(); track dieta._id) {
+                <button
+                  type="button"
+                  class="picker-item"
+                  [class.picker-item--selected]="dieta._id === vista.semana.dietId"
+                  [style.--accent]="colorDieta(dieta._id)"
+                  [disabled]="guardando()"
+                  (click)="asignar(dieta._id!)"
+                >
+                  <span class="picker-dot"></span>
+                  <span class="picker-info">
+                    <strong>{{ dieta.nombre }}</strong>
+                    @if (dieta.fechaOrigenPdf) {
+                      <small>PDF del {{ dieta.fechaOrigenPdf | date: 'dd/MM/yyyy' }}</small>
+                    }
+                  </span>
+                  @if (dieta._id === vista.semana.dietId) {
+                    <ion-icon name="checkmark-circle" class="picker-check"></ion-icon>
+                  }
+                </button>
+              } @empty {
+                <div class="picker-empty">
+                  <ion-icon name="document-text-outline"></ion-icon>
+                  <p>Todavía no tienes dietas guardadas.</p>
+                  <ion-button routerLink="/tabs/diets" (click)="cerrarSelector()">Subir un PDF</ion-button>
+                </div>
+              }
+            </div>
+
+            @if (vista.semana.dietId) {
+              <button type="button" class="picker-clear" [disabled]="guardando()" (click)="asignar(null)">
+                <ion-icon name="close-circle-outline"></ion-icon>
+                Quitar dieta de esta semana
+              </button>
+            }
+          </div>
+        }
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+</ion-content>

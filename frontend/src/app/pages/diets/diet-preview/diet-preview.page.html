@@ -1,0 +1,85 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/diets" text=""></ion-back-button>
+    </ion-buttons>
+    <ion-title>Revisar dieta</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <div class="ns-container">
+    @if (dietas().length > 0) {
+      <div class="intro">
+        <h1>
+          {{ dietas().length === 1 ? 'Hemos leído 1 semana de tu PDF' : 'Hemos leído ' + dietas().length + ' semanas de tu PDF' }}
+        </h1>
+        <p class="ns-muted">Comprueba que todo coincide con el documento y corrige lo necesario antes de guardar.</p>
+      </div>
+
+      @if (dietas().length > 1) {
+        <div class="week-tabs" role="tablist">
+          @for (dieta of dietas(); track $index) {
+            <button
+              type="button"
+              role="tab"
+              class="week-tab"
+              [class.week-tab--active]="$index === seleccionada()"
+              [attr.aria-selected]="$index === seleccionada()"
+              (click)="seleccionada.set($index)"
+            >
+              <span class="week-tab-num">{{ $index + 1 }}</span>
+              <span class="week-tab-name">{{ dieta.nombre || 'Semana ' + ($index + 1) }}</span>
+            </button>
+          }
+        </div>
+      }
+
+      @if (dietaSeleccionada()) {
+        <div class="week-actions">
+          <span class="ns-muted">Semana {{ seleccionada() + 1 }} de {{ dietas().length }}</span>
+          <ion-button fill="clear" color="danger" size="small" (click)="descartar(seleccionada())">
+            <ion-icon slot="start" name="trash-outline"></ion-icon>
+            Descartar esta semana
+          </ion-button>
+        </div>
+      }
+
+      @for (dieta of dietas(); track dieta) {
+        <app-diet-table-editor [diet]="dieta" [hidden]="$index !== seleccionada()"></app-diet-table-editor>
+      }
+    } @else {
+      <div class="empty-state">
+        <ion-icon name="document-text-outline"></ion-icon>
+        <h2>No hay nada que revisar</h2>
+        <p class="ns-muted">Vuelve a Dietas y sube un PDF para empezar.</p>
+        <ion-button routerLink="/tabs/diets">Ir a Dietas</ion-button>
+      </div>
+    }
+  </div>
+</ion-content>
+
+@if (dietas().length > 0) {
+  <ion-footer>
+    <div class="save-bar ns-container">
+      @if (error()) {
+        <div class="ns-alert ns-alert--danger">
+          <ion-icon name="alert-circle-outline"></ion-icon>
+          <span>{{ error() }}</span>
+        </div>
+      }
+      <div class="save-bar-actions">
+        <ion-button fill="outline" color="medium" routerLink="/tabs/diets">Cancelar</ion-button>
+        <ion-button (click)="guardarTodas()" [disabled]="guardando()">
+          @if (guardando()) {
+            <ion-spinner name="crescent" slot="start"></ion-spinner>
+            Guardando…
+          } @else {
+            <ion-icon slot="start" name="checkmark-outline"></ion-icon>
+            {{ dietas().length === 1 ? 'Guardar dieta' : 'Guardar ' + dietas().length + ' dietas' }}
+          }
+        </ion-button>
+      </div>
+    </div>
+  </ion-footer>
+}

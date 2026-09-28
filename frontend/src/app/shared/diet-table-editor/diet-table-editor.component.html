@@ -1,0 +1,95 @@
+<section class="ns-card meta">
+  <label class="field">
+    <span class="field-label">Nombre de la dieta</span>
+    <input class="field-input field-input--title" [(ngModel)]="diet.nombre" placeholder="Ej. Semana 1 · Octubre" />
+  </label>
+
+  @if (diet.fechaOrigenPdf) {
+    <span class="pill">
+      <ion-icon name="document-text-outline"></ion-icon>
+      PDF del {{ diet.fechaOrigenPdf | date: 'dd/MM/yyyy' }}
+    </span>
+  }
+
+  <label class="field">
+    <span class="field-label">Reglas generales</span>
+    <span class="field-hint">Desayuno, media mañana, entre horas, gramajes… todo lo que no va por día.</span>
+    <textarea
+      class="field-input field-input--area"
+      [(ngModel)]="diet.reglasGenerales"
+      rows="3"
+      placeholder="Sin reglas generales"
+    ></textarea>
+  </label>
+</section>
+
+<div class="legend">
+  <ion-icon name="information-circle-outline"></ion-icon>
+  <span>
+    Revisa cada día y corrige lo que no coincida con el PDF. Si una comida no tiene dieta pautada, pulsa
+    <strong>Libre</strong>: esa comida no se tendrá en cuenta en la lista de la compra.
+  </span>
+</div>
+
+<div class="days-grid">
+  @for (dia of dias; track dia) {
+    <article class="ns-card day">
+      <header class="day-header">
+        <h3>{{ nombreDia[dia] }}</h3>
+      </header>
+
+      @for (comida of comidas; track comida) {
+        <div class="meal" [class.meal--libre]="esLibre(dia, comida)">
+          <div class="meal-header">
+            <span class="meal-name">
+              <ion-icon [name]="comida === 'comida' ? 'sunny-outline' : 'moon-outline'"></ion-icon>
+              {{ comida === 'comida' ? 'Comida' : 'Cena' }}
+            </span>
+            <button
+              type="button"
+              class="libre-toggle"
+              [class.libre-toggle--active]="esLibre(dia, comida)"
+              [attr.aria-pressed]="esLibre(dia, comida)"
+              [title]="esLibre(dia, comida) ? 'Quitar libre y volver a los platos' : 'Marcar esta comida como libre'"
+              (click)="toggleLibre(dia, comida)"
+            >
+              <ion-icon [name]="esLibre(dia, comida) ? 'checkmark-circle' : 'ellipse-outline'"></ion-icon>
+              Libre
+            </button>
+          </div>
+
+          @if (esLibre(dia, comida)) {
+            <p class="libre-note">Comida libre · no entra en la lista de la compra</p>
+          } @else {
+            @for (plato of platos(dia, comida); track $index) {
+              <div class="dish">
+                <textarea
+                  class="dish-desc"
+                  rows="1"
+                  placeholder="Descripción del plato"
+                  [(ngModel)]="plato.descripcion"
+                ></textarea>
+                <input class="dish-qty" placeholder="Cantidad" [(ngModel)]="plato.cantidad" />
+                <button
+                  type="button"
+                  class="icon-btn"
+                  aria-label="Eliminar plato"
+                  title="Eliminar plato"
+                  (click)="eliminarPlato(dia, comida, $index)"
+                >
+                  <ion-icon name="trash-outline"></ion-icon>
+                </button>
+              </div>
+            } @empty {
+              <p class="empty">Sin platos</p>
+            }
+            <button type="button" class="add-btn" (click)="agregarPlato(dia, comida)">
+              <ion-icon name="add-outline"></ion-icon>
+              Añadir plato
+            </button>
+          }
+        </div>
+      }
+    </article>
+  }
+</div>

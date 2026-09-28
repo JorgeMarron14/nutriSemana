@@ -1,0 +1,40 @@
+<ion-content>
+  <div class="login-wrap">
+    <form class="login-card ns-card" (ngSubmit)="entrar()">
+      <div class="brand">
+        <img class="brand-mark" src="icon.svg" alt="" />
+        <h1 class="ns-wordmark">nutri<span>SEMANA</span></h1>
+        <p class="ns-muted">Tu dieta semanal, planificada y con la compra hecha.</p>
+      </div>
+
+      <ion-input
+        label="Email"
+        labelPlacement="stacked"
+        fill="outline"
+        type="email"
+        name="email"
+        [(ngModel)]="email"
+        autocomplete="username"
+        inputmode="email"
+      ></ion-input>
+
+      <ion-input
+        label="Contraseña"
+        labelPlacement="stacked"
+        fill="outline"
+        type="password"
+        name="password"
+        [(ngModel)]="password"
+        autocomplete="current-password"
+      ></ion-input>
+
+      @if (error()) {
+        <div class="ns-alert ns-alert--danger">{{ error() }}</div>
+      }
+
+      <ion-button type="submit" expand="block" [disabled]="cargando()">
+        {{ cargando() ? 'Entrando…' : 'Entrar' }}
+      </ion-button>
+    </form>
+  </div>
+</ion-content>

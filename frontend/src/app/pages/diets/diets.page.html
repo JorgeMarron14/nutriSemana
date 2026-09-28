@@ -1,0 +1,58 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Dietas</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <div class="ns-container">
+    <input #fileInput type="file" accept="application/pdf" multiple hidden (change)="onArchivosSeleccionados($event)" />
+
+    <button type="button" class="upload ns-card" (click)="abrirSelectorArchivos()" [disabled]="subiendo()">
+      <span class="upload-icon">
+        @if (subiendo()) {
+          <ion-spinner name="crescent"></ion-spinner>
+        } @else {
+          <ion-icon name="cloud-upload-outline"></ion-icon>
+        }
+      </span>
+      <span class="upload-text">
+        <strong>{{ subiendo() ? 'Analizando el PDF…' : 'Subir PDF de dieta' }}</strong>
+        <span class="ns-muted">
+          {{ subiendo() ? 'Puede tardar unos segundos. Después podrás revisarla.' : 'Leemos el PDF de tu nutricionista y te dejamos revisarlo antes de guardar.' }}
+        </span>
+      </span>
+    </button>
+
+    @if (error()) {
+      <div class="ns-alert ns-alert--danger">
+        <ion-icon name="alert-circle-outline"></ion-icon>
+        <span>{{ error() }}</span>
+      </div>
+    }
+
+    <h2 class="section-title">Mis dietas <span class="count">{{ dietas().length }}</span></h2>
+
+    <div class="diet-list">
+      @for (dieta of dietas(); track dieta._id) {
+        <article class="diet ns-card" (click)="editar(dieta)">
+          <span class="diet-icon"><ion-icon name="restaurant-outline"></ion-icon></span>
+          <div class="diet-info">
+            <h3>{{ dieta.nombre }}</h3>
+            @if (dieta.fechaOrigenPdf) {
+              <p class="ns-muted">PDF del {{ dieta.fechaOrigenPdf | date: 'dd/MM/yyyy' }}</p>
+            }
+          </div>
+          <ion-button fill="clear" color="medium" aria-label="Editar" (click)="$event.stopPropagation(); editar(dieta)">
+            <ion-icon slot="icon-only" name="create-outline"></ion-icon>
+          </ion-button>
+          <ion-button fill="clear" color="danger" aria-label="Eliminar" (click)="$event.stopPropagation(); eliminar(dieta)">
+            <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+          </ion-button>
+        </article>
+      } @empty {
+        <p class="empty ns-muted">Aún no tienes dietas guardadas. Sube un PDF para empezar.</p>
+      }
+    </div>
+  </div>
+</ion-content>

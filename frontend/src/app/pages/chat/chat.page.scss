@@ -1,0 +1,250 @@
+.chat {
+  max-width: 760px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-bottom: 8px;
+}
+
+.new-chat {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-right: 12px;
+  padding: 6px 12px;
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--ns-text-muted);
+  background: var(--ns-surface);
+  border: 1px solid var(--ns-border);
+  border-radius: 999px;
+  cursor: pointer;
+
+  &:hover {
+    color: var(--ion-color-primary);
+    border-color: var(--ion-color-primary);
+  }
+}
+
+/* Bienvenida */
+.welcome {
+  text-align: center;
+  padding: 8vh 8px 0;
+
+  img {
+    width: 72px;
+    height: 72px;
+    filter: drop-shadow(0 8px 20px rgba(46, 125, 50, 0.25));
+  }
+
+  h2 {
+    margin: 14px 0 6px;
+    font-size: 1.35rem;
+    font-weight: 800;
+  }
+
+  p {
+    margin: 0 auto 20px;
+    max-width: 420px;
+    line-height: 1.45;
+  }
+}
+
+.suggestions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+
+.suggestion {
+  padding: 9px 14px;
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--ns-primary-text);
+  background: var(--ns-surface);
+  border: 1px solid var(--ns-border);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.15s;
+
+  &:hover {
+    border-color: var(--ion-color-primary);
+    background: var(--ns-primary-soft);
+  }
+}
+
+/* Mensajes */
+.msg {
+  max-width: 85%;
+  padding: 10px 14px;
+  border-radius: 18px;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.msg--user {
+  align-self: flex-end;
+  white-space: pre-line;
+  color: #fff;
+  background: var(--ion-color-primary);
+  border-bottom-right-radius: 6px;
+}
+
+.msg-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.avatar {
+  flex-shrink: 0;
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--ns-gradient);
+  color: #fff;
+  font-size: 0.95rem;
+}
+
+.msg--app {
+  background: var(--ns-surface);
+  border: 1px solid var(--ns-border);
+  border-bottom-left-radius: 6px;
+  box-shadow: var(--ns-shadow);
+
+  // El HTML de la respuesta se inserta con innerHTML: hay que llegar a el sin encapsulacion.
+  ::ng-deep {
+    p {
+      margin: 0 0 6px;
+    }
+
+    p:last-child,
+    ul:last-child,
+    ol:last-child {
+      margin-bottom: 0;
+    }
+
+    ul,
+    ol {
+      margin: 4px 0 8px;
+      padding-left: 20px;
+    }
+
+    li {
+      margin: 2px 0;
+    }
+
+    strong {
+      color: var(--ns-primary-text);
+    }
+  }
+}
+
+.msg--error {
+  color: #b4262b;
+  background: rgba(229, 72, 77, 0.06);
+  border-color: rgba(229, 72, 77, 0.25);
+}
+
+.typing {
+  display: inline-flex;
+  gap: 4px;
+  padding: 14px 16px;
+
+  span {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--ns-placeholder);
+    animation: typing 1.2s infinite ease-in-out;
+  }
+
+  span:nth-child(2) {
+    animation-delay: 0.15s;
+  }
+
+  span:nth-child(3) {
+    animation-delay: 0.3s;
+  }
+}
+
+@keyframes typing {
+  0%,
+  60%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.5;
+  }
+  30% {
+    transform: translateY(-4px);
+    opacity: 1;
+  }
+}
+
+/* Caja de texto */
+ion-footer {
+  background: var(--ion-background-color);
+  border-top: 1px solid var(--ns-border);
+}
+
+.composer {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
+
+  textarea {
+    flex: 1;
+    min-height: 44px;
+    max-height: 140px;
+    padding: 11px 16px;
+    font: inherit;
+    color: inherit;
+    line-height: 1.4;
+    resize: none;
+    field-sizing: content;
+    background: var(--ns-surface);
+    border: 1px solid var(--ns-border);
+    border-radius: 22px;
+    outline: none;
+
+    &::placeholder {
+      color: var(--ns-placeholder);
+    }
+
+    &:focus {
+      border-color: var(--ion-color-primary);
+      box-shadow: 0 0 0 3px var(--ns-primary-soft);
+    }
+  }
+}
+
+.send {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border: none;
+  border-radius: 50%;
+  background: var(--ion-color-primary);
+  color: #fff;
+  font-size: 1.25rem;
+  cursor: pointer;
+  transition: opacity 0.15s, transform 0.15s;
+
+  &:hover:not(:disabled) {
+    transform: scale(1.05);
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: default;
+  }
+}

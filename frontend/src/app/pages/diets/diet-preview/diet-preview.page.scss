@@ -1,0 +1,123 @@
+.intro {
+  margin: 4px 0 16px;
+
+  h1 {
+    margin: 0 0 4px;
+    font-size: 1.5rem;
+    font-weight: 800;
+  }
+
+  p {
+    margin: 0;
+  }
+}
+
+.week-tabs {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  margin-bottom: 8px;
+  scrollbar-width: thin;
+}
+
+.week-tab {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 260px;
+  padding: 8px 14px 8px 8px;
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--ns-text-muted);
+  background: var(--ns-surface);
+  border: 1px solid var(--ns-border);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.15s;
+
+  &:hover {
+    border-color: var(--ns-border-strong);
+    color: var(--ion-text-color);
+  }
+}
+
+.week-tab-num {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--ns-surface-muted);
+  font-size: 0.8rem;
+}
+
+.week-tab-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.week-tab--active {
+  background: var(--ion-color-primary);
+  border-color: var(--ion-color-primary);
+  color: #fff;
+
+  &:hover {
+    color: #fff;
+  }
+
+  .week-tab-num {
+    background: rgba(255, 255, 255, 0.22);
+  }
+}
+
+.week-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 4px 0 8px;
+  font-size: 0.88rem;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 15vh 16px 0;
+
+  ion-icon {
+    font-size: 3rem;
+    color: var(--ns-text-muted);
+  }
+
+  h2 {
+    margin: 12px 0 4px;
+    font-weight: 800;
+  }
+}
+
+ion-footer {
+  background: var(--ns-surface);
+  border-top: 1px solid var(--ns-border);
+  box-shadow: 0 -6px 20px rgba(28, 43, 30, 0.06);
+}
+
+.save-bar {
+  padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
+
+  .ns-alert {
+    margin-top: 0;
+  }
+}
+
+.save-bar-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+
+  ion-button {
+    margin: 0;
+    min-height: 44px;
+  }
+}

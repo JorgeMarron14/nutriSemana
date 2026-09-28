@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">NutriSemana</string>
+    <string name="title_activity_main">NutriSemana</string>
+    <string name="package_name">es.nutrisemana.app</string>
+    <string name="custom_url_scheme">es.nutrisemana.app</string>
+</resources>

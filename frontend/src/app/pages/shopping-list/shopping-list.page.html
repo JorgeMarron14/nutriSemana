@@ -1,0 +1,178 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Lista de la compra</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <div class="ns-container shopping">
+    <section class="ns-card picker">
+      <div class="cal-head">
+        <button type="button" class="cal-nav" aria-label="Mes anterior" (click)="cambiarMes(-1)">
+          <ion-icon name="chevron-back-outline"></ion-icon>
+        </button>
+        <h2>{{ nombreMes() }}</h2>
+        <button type="button" class="cal-nav" aria-label="Mes siguiente" (click)="cambiarMes(1)">
+          <ion-icon name="chevron-forward-outline"></ion-icon>
+        </button>
+      </div>
+
+      <div class="cal" role="radiogroup" aria-label="Semana para la lista de la compra">
+        <div class="cal-row cal-row--labels" aria-hidden="true">
+          <div class="cal-days">
+            @for (inicial of iniciales; track $index) {
+              <span>{{ inicial }}</span>
+            }
+          </div>
+          <span></span>
+        </div>
+
+        @for (fila of filas(); track fila.semana.fechaInicioSemana) {
+          <button
+            type="button"
+            role="radio"
+            class="cal-row"
+            [class.cal-row--empty]="!fila.semana.dietId"
+            [class.cal-row--selected]="fila.semana.fechaInicioSemana === semanaSeleccionada()"
+            [style.--accent]="colorDieta(fila.dieta?._id)"
+            [disabled]="!fila.semana.dietId"
+            [attr.aria-checked]="fila.semana.fechaInicioSemana === semanaSeleccionada()"
+            [attr.aria-label]="(fila.inicio | date: 'd MMM') + ' – ' + (fila.fin | date: 'd MMM') + (fila.dieta ? ': ' + fila.dieta.nombre : ': sin dieta')"
+            (click)="seleccionar(fila)"
+          >
+            <div class="cal-days">
+              @for (dia of fila.dias; track $index) {
+                <span [class.out]="dia.fueraDeMes" [class.today]="dia.esHoy">{{ dia.numero }}</span>
+              }
+            </div>
+            <span class="cal-diet">
+              @if (fila.dieta) {
+                <span class="dot"></span>
+                <span class="cal-diet-name">{{ fila.dieta.nombre }}</span>
+              } @else {
+                <span class="cal-diet-name">Sin dieta</span>
+              }
+            </span>
+          </button>
+        }
+      </div>
+
+      @if (filas().length && !hayDietaEnElMes()) {
+        <p class="ns-muted hint">Este mes no tiene ninguna semana con dieta. Asígnalas en <a routerLink="/tabs/planner">Plan</a>.</p>
+      }
+
+      <ion-button expand="block" class="generate" [disabled]="!filaSeleccionada() || generando()" (click)="generar()">
+        @if (generando()) {
+          <ion-spinner name="crescent" slot="start"></ion-spinner>
+          Generando…
+        } @else if (filaSeleccionada(); as f) {
+          <ion-icon slot="start" name="sparkles-outline"></ion-icon>
+          Generar lista · {{ f.inicio | date: 'd MMM' }} – {{ f.fin | date: 'd MMM' }}
+        } @else {
+          Elige una semana
+        }
+      </ion-button>
+      @if (generando()) {
+        <p class="ns-muted hint">Estamos desglosando los platos en ingredientes. Puede tardar un poco.</p>
+      }
+    </section>
+
+    @if (exclusiones(); as ex) {
+      <div class="excluded">
+        <ion-icon name="information-circle-outline"></ion-icon>
+        <div>
+          <strong>Esta lista no incluye:</strong>
+          <ul>
+            @if (ex.antesDeComprar.length) {
+              <li>
+                {{ ex.antesDeComprar.join(', ') }}
+                <span class="ns-muted">— ya consumido cuando compras ({{ ex.momento }})</span>
+              </li>
+            }
+            @if (ex.enAjustes.length) {
+              <li>
+                {{ ex.enAjustes.join(', ') }}
+                <span class="ns-muted">— excluido en Ajustes</span>
+              </li>
+            }
+          </ul>
+          <a routerLink="/tabs/settings">Cambiar en Ajustes</a>
+        </div>
+      </div>
+    }
+
+    @if (error()) {
+      <div class="ns-alert ns-alert--danger">
+        <ion-icon name="alert-circle-outline"></ion-icon>
+        <span>{{ error() }}</span>
+      </div>
+    }
+
+    @if (lista(); as l) {
+      @if (l.items.length === 0) {
+        <div class="ns-alert ns-alert--info">
+          No hay nada que comprar para esta semana con tu configuración actual (día de compra y comidas excluidas en Ajustes).
+        </div>
+      } @else {
+        <div class="summary">
+          <span><strong>{{ comprados() }}</strong> de {{ l.items.length }} productos en el carro</span>
+          <div class="progress-bar"><span [style.width.%]="(comprados() / l.items.length) * 100"></span></div>
+        </div>
+      }
+    }
+
+    @for (grupo of itemsPorCategoria(); track grupo.categoria) {
+      <section class="ns-card group">
+        <h2 class="group-title">
+          {{ grupo.nombreCategoria }}
+          <span class="count">{{ grupo.items.length }}</span>
+        </h2>
+
+        @for (item of grupo.items; track item._id) {
+          <button
+            type="button"
+            class="item"
+            [class.item--done]="item.comprado"
+            role="checkbox"
+            [attr.aria-checked]="item.comprado"
+            (click)="toggleComprado(item)"
+          >
+            <span class="check">
+              @if (item.comprado) {
+                <ion-icon name="checkmark-outline"></ion-icon>
+              }
+            </span>
+
+            <span class="item-body">
+              <span class="item-top">
+                <span class="item-name">{{ item.nombre }}</span>
+                @if (item.cantidad) {
+                  <span class="item-qty">{{ item.cantidad }}</span>
+                }
+              </span>
+
+              @if (usos(item); as u) {
+                <span class="uses">
+                  @if (u.comidas.length) {
+                    <span class="use use--comida" [title]="'Comidas: ' + u.comidas.join(', ')">
+                      <ion-icon name="sunny-outline"></ion-icon>
+                      {{ u.comidas.length }} {{ u.comidas.length === 1 ? 'comida' : 'comidas' }}
+                      <small>({{ u.comidas.join(', ') }})</small>
+                    </span>
+                  }
+                  @if (u.cenas.length) {
+                    <span class="use use--cena" [title]="'Cenas: ' + u.cenas.join(', ')">
+                      <ion-icon name="moon-outline"></ion-icon>
+                      {{ u.cenas.length }} {{ u.cenas.length === 1 ? 'cena' : 'cenas' }}
+                      <small>({{ u.cenas.join(', ') }})</small>
+                    </span>
+                  }
+                </span>
+              }
+            </span>
+          </button>
+        }
+      </section>
+    }
+  </div>
+</ion-content>

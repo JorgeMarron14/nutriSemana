@@ -1,0 +1,143 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Ajustes</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <div class="ns-container settings">
+    @if (config(); as cfg) {
+      <!-- Compra -->
+      <section class="ns-card block">
+        <header class="block-head">
+          <ion-icon name="cart-outline"></ion-icon>
+          <div>
+            <h2>Cuándo haces la compra</h2>
+            <p class="ns-muted">Lo que ya habrás comido antes de comprar no entra en la lista.</p>
+          </div>
+        </header>
+
+        <div class="row">
+          <label class="row-label" for="diaCompra">Día</label>
+          <select id="diaCompra" class="select" [(ngModel)]="cfg.diaCompra">
+            @for (dia of dias; track dia) {
+              <option [value]="dia">{{ nombreDia[dia] }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="row">
+          <span class="row-label">Momento</span>
+          <div class="segmented" role="radiogroup">
+            @for (momento of momentos; track momento.valor) {
+              <button
+                type="button"
+                role="radio"
+                [attr.aria-checked]="cfg.momentoCompra === momento.valor"
+                [class.active]="cfg.momentoCompra === momento.valor"
+                (click)="cfg.momentoCompra = momento.valor"
+              >
+                <ion-icon [name]="momento.icono"></ion-icon>
+                {{ momento.texto }}
+              </button>
+            }
+          </div>
+        </div>
+      </section>
+
+      <!-- Raciones -->
+      <section class="ns-card block">
+        <header class="block-head">
+          <ion-icon name="scale-outline"></ion-icon>
+          <div>
+            <h2>Tus raciones habituales</h2>
+            <p class="ns-muted">
+              Lo que sueles tomar en una comida. Se usa para calcular las cantidades de la lista de la compra cuando la
+              dieta no las indica. Los alimentos sin ración (verduras, aliños…) van sin cantidad.
+            </p>
+          </div>
+        </header>
+
+        <div class="portions">
+          @for (racion of cfg.raciones; track $index) {
+            <div class="portion">
+              <input class="input" placeholder="Alimento (ej. Pescado)" [(ngModel)]="racion.alimento" aria-label="Alimento" />
+              <input class="input" placeholder="Cantidad (ej. 200 g)" [(ngModel)]="racion.cantidad" aria-label="Cantidad" />
+              <button type="button" class="icon-btn" aria-label="Eliminar ración" title="Eliminar" (click)="eliminarRacion($index)">
+                <ion-icon name="trash-outline"></ion-icon>
+              </button>
+            </div>
+          } @empty {
+            <p class="ns-muted empty">No tienes raciones definidas: la lista de la compra irá sin cantidades.</p>
+          }
+        </div>
+        <button type="button" class="add-btn" (click)="agregarRacion()">
+          <ion-icon name="add-outline"></ion-icon>
+          Añadir ración
+        </button>
+      </section>
+
+      <!-- Exclusiones -->
+      <section class="ns-card block">
+        <header class="block-head">
+          <ion-icon name="ban-outline"></ion-icon>
+          <div>
+            <h2>Comidas que no necesitas comprar</h2>
+            <p class="ns-muted">Márcalas para que nunca entren en la lista (p. ej. si comes fuera el fin de semana).</p>
+            <p class="ns-muted">
+              <ion-icon name="time-outline"></ion-icon>
+              <strong>Ya comida</strong>: la habrás hecho antes de comprar (según el día y momento de arriba), así que tampoco entra.
+            </p>
+          </div>
+        </header>
+
+        <div class="excl-grid">
+          <span></span>
+          <span class="excl-col">Comida</span>
+          <span class="excl-col">Cena</span>
+          @for (dia of dias; track dia) {
+            <span class="excl-day">{{ nombreDia[dia] }}</span>
+            @for (comida of comidas; track comida) {
+              @if (esAutoExcluido(dia, comida)) {
+                <span
+                  class="excl-toggle excl-toggle--auto"
+                  [title]="'Ya la habrás hecho cuando compras (' + nombreDia[cfg.diaCompra].toLowerCase() + ' por la ' + cfg.momentoCompra + ')'"
+                >
+                  <ion-icon name="time-outline"></ion-icon>
+                  Ya comida
+                </span>
+              } @else {
+                <button
+                  type="button"
+                  class="excl-toggle"
+                  [class.active]="estaExcluido(dia, comida)"
+                  [attr.aria-pressed]="estaExcluido(dia, comida)"
+                  [attr.aria-label]="(estaExcluido(dia, comida) ? 'Incluir ' : 'Excluir ') + comida + ' del ' + nombreDia[dia]"
+                  (click)="toggleExclusion(dia, comida)"
+                >
+                  <ion-icon [name]="estaExcluido(dia, comida) ? 'close-outline' : 'checkmark-outline'"></ion-icon>
+                  {{ estaExcluido(dia, comida) ? 'No comprar' : 'Comprar' }}
+                </button>
+              }
+            }
+          }
+        </div>
+      </section>
+
+      <div class="actions">
+        @if (guardado()) {
+          <span class="saved"><ion-icon name="checkmark-circle"></ion-icon> Ajustes guardados</span>
+        }
+        <ion-button (click)="guardar()" [disabled]="guardando()">
+          <ion-icon slot="start" name="save-outline"></ion-icon>
+          {{ guardando() ? 'Guardando…' : 'Guardar ajustes' }}
+        </ion-button>
+      </div>
+    }
+
+    <ion-button class="logout" expand="block" fill="clear" color="medium" (click)="cerrarSesion()">
+      <ion-icon slot="start" name="log-out-outline"></ion-icon>
+      Cerrar sesión
+    </ion-button>
+  </div>
+</ion-content>

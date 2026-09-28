@@ -1,0 +1,156 @@
+/* Core CSS required for Ionic components to work properly */
+@import "@ionic/angular/css/core.css";
+
+/* Basic CSS for apps built with Ionic */
+@import "@ionic/angular/css/normalize.css";
+@import "@ionic/angular/css/structure.css";
+@import "@ionic/angular/css/typography.css";
+@import "@ionic/angular/css/display.css";
+
+/* Optional CSS utils */
+@import "@ionic/angular/css/padding.css";
+@import "@ionic/angular/css/float-elements.css";
+@import "@ionic/angular/css/text-alignment.css";
+@import "@ionic/angular/css/text-transformation.css";
+@import "@ionic/angular/css/flex-utils.css";
+
+@import "./theme/variables.scss";
+
+/* ---------- Estilo global NutriSemana ---------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+}
+
+ion-header {
+  box-shadow: none !important;
+  border-bottom: 1px solid var(--ns-border);
+  backdrop-filter: saturate(180%) blur(12px);
+  -webkit-backdrop-filter: saturate(180%) blur(12px);
+}
+
+ion-toolbar {
+  --border-width: 0;
+  --min-height: 60px;
+}
+
+ion-title {
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+ion-tab-bar {
+  --border: 1px solid var(--ns-border);
+  height: 64px;
+}
+
+ion-tab-button {
+  font-weight: 600;
+  --ripple-color: transparent;
+}
+
+ion-button {
+  --border-radius: 12px;
+  --box-shadow: none;
+  font-weight: 600;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+ion-button[expand='block'] {
+  min-height: 48px;
+}
+
+ion-card {
+  border-radius: var(--ns-radius);
+  box-shadow: var(--ns-shadow);
+  border: 1px solid var(--ns-border);
+  margin-inline: 0;
+}
+
+ion-list {
+  background: transparent !important;
+}
+
+ion-list-header {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ns-text-muted);
+}
+
+h1, h2, h3 {
+  letter-spacing: -0.02em;
+}
+
+/* Utilidades compartidas */
+.ns-container {
+  max-width: 1080px;
+  margin: 0 auto;
+}
+
+.ns-card {
+  background: var(--ns-surface);
+  border: 1px solid var(--ns-border);
+  border-radius: var(--ns-radius);
+  box-shadow: var(--ns-shadow);
+}
+
+.ns-muted {
+  color: var(--ns-text-muted);
+}
+
+.ns-alert {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 12px 14px;
+  border-radius: var(--ns-radius-sm);
+  font-size: 0.92rem;
+  margin: 12px 0;
+}
+
+.ns-alert--danger {
+  background: rgba(229, 72, 77, 0.1);
+  color: #b4262b;
+}
+
+.ns-alert--info {
+  background: var(--ns-primary-soft);
+  color: var(--ns-primary-text);
+}
+
+/* Logotipo: "nutri" en verde oscuro + "SEMANA" en verde claro */
+.ns-wordmark {
+  font-family: 'Nunito', var(--ion-font-family);
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  color: var(--ns-green);
+
+  span {
+    color: var(--ns-green-light);
+    letter-spacing: 0;
+  }
+}
+
+.ns-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  img {
+    width: 30px;
+    height: 30px;
+  }
+
+  .ns-wordmark {
+    font-size: 1.3rem;
+  }
+}

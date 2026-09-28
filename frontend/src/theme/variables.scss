@@ -1,0 +1,109 @@
+// NutriSemana - paleta de marca: verde principal #2E7D32, verde secundario #8BC34A, fondo suave #E8F5E9,
+// acento energia #FFA726, acento saludable #FF8A65, fondo calido #FFF8E1
+:root {
+  --ion-color-primary: #2e7d32;
+  --ion-color-primary-rgb: 46, 125, 50;
+  --ion-color-primary-contrast: #ffffff;
+  --ion-color-primary-contrast-rgb: 255, 255, 255;
+  --ion-color-primary-shade: #286e2c;
+  --ion-color-primary-tint: #438a47;
+
+  --ion-color-secondary: #8bc34a;
+  --ion-color-secondary-rgb: 139, 195, 74;
+  --ion-color-secondary-contrast: #1b1b1b;
+  --ion-color-secondary-contrast-rgb: 27, 27, 27;
+  --ion-color-secondary-shade: #7aac41;
+  --ion-color-secondary-tint: #97c95c;
+
+  --ion-color-tertiary: #ff8a65;
+  --ion-color-tertiary-rgb: 255, 138, 101;
+  --ion-color-tertiary-contrast: #1b1b1b;
+  --ion-color-tertiary-contrast-rgb: 27, 27, 27;
+  --ion-color-tertiary-shade: #e07959;
+  --ion-color-tertiary-tint: #ff9674;
+
+  --ion-color-success: #43a047;
+  --ion-color-success-rgb: 67, 160, 71;
+  --ion-color-success-contrast: #ffffff;
+  --ion-color-success-contrast-rgb: 255, 255, 255;
+  --ion-color-success-shade: #3b8d3e;
+  --ion-color-success-tint: #56aa5a;
+
+  --ion-color-warning: #ffa726;
+  --ion-color-warning-rgb: 255, 167, 38;
+  --ion-color-warning-contrast: #1b1b1b;
+  --ion-color-warning-contrast-rgb: 27, 27, 27;
+  --ion-color-warning-shade: #e09321;
+  --ion-color-warning-tint: #ffb03c;
+
+  --ion-color-danger: #e5484d;
+  --ion-color-danger-rgb: 229, 72, 77;
+  --ion-color-danger-contrast: #ffffff;
+  --ion-color-danger-contrast-rgb: 255, 255, 255;
+  --ion-color-danger-shade: #ca3f44;
+  --ion-color-danger-tint: #e85a5f;
+
+  --ion-color-light: #f4f6f8;
+  --ion-color-light-rgb: 244, 246, 248;
+  --ion-color-light-contrast: #000000;
+  --ion-color-light-contrast-rgb: 0, 0, 0;
+  --ion-color-light-shade: #d7d8da;
+  --ion-color-light-tint: #f5f7f9;
+
+  --ion-color-medium: #64748b;
+  --ion-color-medium-rgb: 100, 116, 139;
+  --ion-color-medium-contrast: #ffffff;
+  --ion-color-medium-contrast-rgb: 255, 255, 255;
+  --ion-color-medium-shade: #58667a;
+  --ion-color-medium-tint: #748297;
+
+  --ion-color-dark: #0f172a;
+  --ion-color-dark-rgb: 15, 23, 42;
+  --ion-color-dark-contrast: #ffffff;
+  --ion-color-dark-contrast-rgb: 255, 255, 255;
+  --ion-color-dark-shade: #0d1425;
+  --ion-color-dark-tint: #272e3f;
+
+  // Base de la app
+  --ion-font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --ion-background-color: #fafaf6;
+  --ion-background-color-rgb: 250, 250, 246;
+  --ion-text-color: #1c2b1e;
+  --ion-text-color-rgb: 28, 43, 30;
+  --ion-toolbar-background: rgba(250, 250, 246, 0.88);
+  --ion-toolbar-color: #1c2b1e;
+  --ion-toolbar-border-color: transparent;
+  --ion-tab-bar-background: #ffffff;
+  --ion-tab-bar-border-color: #e7eae0;
+  --ion-tab-bar-color: #9aa598;
+  --ion-tab-bar-color-selected: var(--ion-color-primary);
+  --ion-item-background: transparent;
+  --ion-border-color: #e7eae0;
+
+  // Paleta de marca
+  --ns-green: #2e7d32;
+  --ns-green-light: #8bc34a;
+  --ns-green-soft: #e8f5e9;
+  --ns-orange: #ffa726;
+  --ns-coral: #ff8a65;
+  --ns-cream: #fff8e1;
+  --ns-gradient: linear-gradient(160deg, #c5e1a5 0%, #8bc34a 55%, #689f38 100%);
+  --ns-gradient-h: linear-gradient(90deg, #8bc34a, #2e7d32);
+
+  // Tokens propios
+  --ns-surface: #ffffff;
+  --ns-surface-muted: #f6f8f1;
+  --ns-border: #e7eae0;
+  --ns-border-strong: #cfd8c8;
+  --ns-placeholder: #a3ad9f;
+  --ns-text-muted: #66735f;
+  --ns-radius: 16px;
+  --ns-radius-sm: 10px;
+  --ns-shadow: 0 1px 2px rgba(28, 43, 30, 0.04), 0 6px 20px rgba(28, 43, 30, 0.06);
+  --ns-shadow-hover: 0 2px 4px rgba(28, 43, 30, 0.05), 0 10px 28px rgba(28, 43, 30, 0.09);
+  --ns-primary-soft: var(--ns-green-soft);
+  --ns-primary-text: #1b5e20;
+  --ns-warning-soft: #fff3e0;
+  --ns-warning-border: rgba(255, 167, 38, 0.5);
+  --ns-warning-text: #a84300;
+}

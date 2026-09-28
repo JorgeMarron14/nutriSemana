@@ -1,0 +1,65 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Chat</ion-title>
+    @if (mensajes().length) {
+      <button slot="end" type="button" class="new-chat" (click)="nuevaConversacion()">
+        <ion-icon name="refresh-outline"></ion-icon>
+        Nueva
+      </button>
+    }
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <div class="ns-container chat">
+    @if (mensajes().length === 0) {
+      <div class="welcome">
+        <img src="icon.svg" alt="" />
+        <h2>¿Qué te apetece saber?</h2>
+        <p class="ns-muted">
+          Pregúntame qué toca comer, qué ingredientes necesitas o cómo preparar un plato de tu dieta.
+        </p>
+        <div class="suggestions">
+          @for (s of sugerencias; track s) {
+            <button type="button" class="suggestion" (click)="enviar(s)">{{ s }}</button>
+          }
+        </div>
+      </div>
+    }
+
+    @for (mensaje of mensajes(); track $index) {
+      @if (mensaje.autor === 'usuario') {
+        <div class="msg msg--user">{{ mensaje.texto }}</div>
+      } @else {
+        <div class="msg-row">
+          <span class="avatar"><ion-icon name="leaf"></ion-icon></span>
+          <div class="msg msg--app" [class.msg--error]="mensaje.error" [innerHTML]="mensaje.html"></div>
+        </div>
+      }
+    }
+
+    @if (cargando()) {
+      <div class="msg-row">
+        <span class="avatar"><ion-icon name="leaf"></ion-icon></span>
+        <div class="msg msg--app typing" aria-label="Escribiendo">
+          <span></span><span></span><span></span>
+        </div>
+      </div>
+    }
+  </div>
+</ion-content>
+
+<ion-footer>
+  <div class="composer ns-container">
+    <textarea
+      rows="1"
+      placeholder="Escribe tu pregunta…"
+      [(ngModel)]="pregunta"
+      (keydown)="onKeydown($event)"
+      aria-label="Pregunta"
+    ></textarea>
+    <button type="button" class="send" aria-label="Enviar" [disabled]="!pregunta.trim() || cargando()" (click)="enviar()">
+      <ion-icon name="arrow-up"></ion-icon>
+    </button>
+  </div>
+</ion-footer>

@@ -1,0 +1,28 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/diets" text=""></ion-back-button>
+    </ion-buttons>
+    <ion-title>Editar dieta</ion-title>
+    <ion-buttons slot="end">
+      @if (diet()) {
+        <ion-button fill="solid" color="primary" (click)="guardar()" [disabled]="guardando()">
+          <ion-icon slot="start" name="save-outline"></ion-icon>
+          {{ guardando() ? 'Guardando…' : 'Guardar' }}
+        </ion-button>
+      }
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <div class="ns-container">
+    @if (error()) {
+      <div class="ns-alert ns-alert--danger">{{ error() }}</div>
+    }
+
+    @if (diet(); as dieta) {
+      <app-diet-table-editor [diet]="dieta"></app-diet-table-editor>
+    }
+  </div>
+</ion-content>

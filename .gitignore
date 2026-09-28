@@ -1,19 +1,23 @@
 # Angular specific
-/dist/
-/out-tsc/
-/tmp/
-/coverage/
-/e2e/test-output/
-/.angular/
-.angular/
+**/dist/
+**/out-tsc/
+**/tmp/
+**/coverage/
+**/e2e/test-output/
+**/.angular/
 
 # Node modules and dependency files
-/node_modules/
-/package-lock.json
-/yarn.lock
+**/node_modules/
 
 # Environment files
-/.env
+**/.env
+!**/.env.example
+
+# Ionic / Capacitor
+# (la carpeta android/ se versiona: contiene la configuracion e iconos de la app)
+**/.ionic/
+**/www/
+**/ios/
 
 # Angular CLI and build artefacts
 /.angular-cli.json
